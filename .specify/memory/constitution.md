@@ -1,78 +1,146 @@
 <!--
 Sync Impact Report:
-- Version change: N/A → 1.0.0
-- Added sections: Core Principles (6), Additional Constraints, Development Workflow, Governance
+- Version change: 1.0.0 → 2.0.0
+- Modified principles: I. Simplicity Over Cleverness → I. Backend as Single Source of Truth, II. Deterministic Behavior → II. Frontend is Stateless and Dumb, III. Explicit Logic → III. Business Logic in Backend Only, IV. Zero External Dependencies → IV. Database Schema Stability, V. Input Validation and Error Handling → V. Explicit REST API Design, VI. In-Memory Storage Only → VI. Production Realism Over Tutorial Shortcuts
+- Added sections: Technology Stack, In/Out of Scope, Data Model Authority, API Design Rules, Code Quality Standards, Persistence Rules, Frontend Discipline, Success Criteria, Failure Conditions
 - Templates requiring updates: ✅ Updated
 - Follow-up TODOs: None
 -->
 
-# Todo Application Constitution
+# Phase II — Full-Stack Web Todo Application Constitution
 
 ## Core Principles
 
-### I. Simplicity Over Cleverness
-All code must prioritize clarity and readability over optimization or clever implementations. Solutions should be straightforward and easily understood by developers at all levels. No over-engineering is permitted.
+### I. Backend as Single Source of Truth
+The backend service must serve as the authoritative source for all application data and business logic. All state changes must be validated and processed by the backend before being reflected in the frontend. No client-side state should contradict backend truth.
 
-### II. Deterministic Behavior
-Every function and operation must produce the same output given the same input. Side effects should be minimized and clearly documented. The application must behave predictably under all valid inputs.
+### II. Frontend is Stateless and Dumb
+The frontend application must remain stateless and serve only as a user interface layer that consumes backend APIs. All business rules, validation, and state management must be handled exclusively by backend services. Frontend components should only handle UI rendering and user interactions.
 
-### III. Explicit Logic
-All business logic must be transparent with no hidden side effects. Functions should do exactly what their names suggest. Complex operations must be broken down into smaller, clearly named functions.
+### III. Business Logic in Backend Only
+All business logic, validation rules, and domain-specific operations must reside exclusively in the backend service. Frontend applications must not implement business rules or make independent decisions about data validity or business processes.
 
-### IV. Zero External Dependencies
-The application must run with Python standard library only. No third-party packages, frameworks, or external services are permitted. All functionality must be implemented using built-in Python features.
+### IV. Database Schema Stability
+Database schema changes must be carefully planned and justified. Schema modifications should prioritize stability and backward compatibility over rapid iteration. All schema changes require explicit justification and must follow proper migration procedures.
 
-### V. Input Validation and Error Handling
-All user inputs must be validated explicitly. The program must never crash on invalid input. Clear, actionable error messages must be provided to users when invalid operations are attempted.
+### V. Explicit REST API Design
+REST API endpoints must be explicit, predictable, and follow standard conventions. No hidden behavior or overloaded endpoints are permitted. Each endpoint must have clear, well-defined responsibilities with proper HTTP status codes and JSON responses.
 
-### VI. In-Memory Storage Only
-All data must be stored in memory during runtime. No file system access, databases, or external storage is allowed. Data persistence is explicitly out of scope for this implementation.
+### VI. Production Realism Over Tutorial Shortcuts
+All implementation decisions must prioritize production-ready practices over tutorial-style shortcuts. This includes proper error handling, environment-based configuration, security considerations, and maintainable architecture patterns.
 
 ## Additional Constraints
 
 ### Technology Stack
-- Language: Python 3.x
-- Runtime: Console / CLI
-- Storage: In-memory only (no files, no DB, no external services)
-- Single Python file implementation
-- Code must be beginner-readable but professional-grade
+- Frontend: Next.js
+- Backend: FastAPI
+- ORM: SQLModel
+- Database: Neon (PostgreSQL)
+- Communication: REST API (JSON)
 
-### Functional Requirements
-- Add Task: Each task must have a unique ID, title (required), optional description, and completion status
-- View Tasks: Display all tasks with ID, title, and completion status clearly
-- Update Task: Update title and/or description with validation of task existence
-- Delete Task: Delete by task ID with existence validation
-- Mark Complete/Incomplete: Toggle completion state with explicit feedback
+### In Scope
+- RESTful API design with FastAPI
+- Persistent storage using SQLModel + PostgreSQL (Neon)
+- CRUD operations for Todo tasks
+- Next.js frontend consuming backend APIs
+- Environment-based configuration (.env)
+- Clean project structure (frontend / backend separation)
+
+### Out of Scope (STRICT)
+- AI features or chatbots
+- Authentication / authorization
+- File uploads
+- Background jobs
+- WebSockets
+- Kafka, Dapr, or distributed systems
+- Kubernetes or Docker (reserved for later phases)
+- Testing frameworks (manual testing only)
+
+### Data Model Authority
+- Task model must be explicitly defined and frozen early
+- Minimum required fields:
+  - id (primary key)
+  - title (required)
+  - description (optional)
+  - is_completed (boolean)
+  - created_at (timestamp)
+- Schema changes require explicit justification
+
+### API Design Rules
+- REST endpoints must be explicit and predictable
+- No hidden behavior
+- No overloaded endpoints
+- Validation handled via Pydantic / SQLModel
+- Proper HTTP status codes required
 
 ### Code Quality Standards
-- Meaningful variable and function names
-- Consistent formatting (PEP8)
-- Inline comments ONLY where logic is non-obvious
-- No dead code or unused variables/imports
-- Clear separation of concerns (menu logic vs task logic)
+- No autogenerated CRUD scaffolding without review
+- Readable, maintainable code
+- Meaningful naming conventions
+- No unused code or imports
+- Clear separation:
+  - routes
+  - models
+  - database/session
+  - services (if needed)
+
+### Persistence Rules
+- All data must persist in Neon DB
+- No in-memory fallback
+- No SQLite for production logic
+- Database URL must be environment-driven
+
+### Frontend Discipline
+- Next.js handles rendering and user interaction only
+- No business rules in frontend
+- All state synced from backend APIs
+- Error and loading states must be explicit
 
 ## Development Workflow
 
+### Development Discipline
+- Spec-driven development using Spec-Kit
+- Workflow: Constitution → Specify → Plan → Task → Implement
+- No manual coding outside agent instructions
+- Each change must be traceable to a spec
+
 ### Error Handling Standards
-- Invalid input must be handled explicitly
-- Program must never crash on bad user input
-- User must always receive a clear error message
-- All error paths must be considered and implemented
+- All API endpoints must return appropriate HTTP status codes
+- Frontend must handle all possible API error states gracefully
+- Proper error messages must be displayed to users when API calls fail
+- Database connection errors must be handled with retry logic or clear user feedback
 
-### CLI UX Standards
-- Clear menu options with numbered choices
-- Loop-based interaction until user explicitly exits
-- Explicit success and failure messages
-- No confusing shortcuts or hidden commands
+### API Testing Standards
+- All REST endpoints must be manually tested for correct functionality
+- CRUD operations must be verified to work end-to-end via web UI
+- Data persistence must be verified across server restarts
+- Frontend and backend communication must be validated under various network conditions
 
-### Testing Approach
-- Manual testing only (no automated testing frameworks)
-- All features must be verified to work correctly
-- Edge cases must be considered and handled appropriately
-- No unhandled exceptions allowed
+## Success Criteria
+- Full CRUD works end-to-end via web UI
+- Data persists across server restarts
+- Frontend and backend are cleanly decoupled
+- Codebase is extendable for Phase III (AI integration)
+- Project passes architectural review without rewrites
+
+## Failure Conditions
+- Business logic in frontend
+- Skipping database layer
+- Tight coupling between frontend and backend
+- Scope creep beyond Phase II
+- Ignoring spec-driven workflow
 
 ## Governance
 
-This constitution defines the mandatory standards for the Todo Application project. All code contributions must comply with these principles. Changes to this constitution require explicit approval and must be documented with clear rationale. All pull requests and code reviews must verify compliance with these principles before approval.
+This constitution defines the mandatory standards for the Phase II Full-Stack Web Todo Application project. All code contributions must comply with these principles. Changes to this constitution require explicit approval and must be documented with clear rationale. All pull requests and code reviews must verify compliance with these principles before approval.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-02 | **Last Amended**: 2026-01-02
+Authority Order:
+1. This Constitution
+2. Phase II /sp.specify
+3. Phase II /sp.plan
+4. Phase II /sp.task
+5. Phase II /sp.implement
+
+Any conflict must be resolved by following this order.
+
+**Version**: 2.0.0 | **Ratified**: 2026-01-02 | **Last Amended**: 2026-01-03

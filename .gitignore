@@ -1,14 +1,15 @@
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
+*.so
 .Python
 env/
 venv/
 .venv/
 pip-log.txt
 pip-delete-this-directory.txt
-.tox
+.tox/
 .coverage
 .coverage.*
 .cache
@@ -16,9 +17,108 @@ nosetests.xml
 coverage.xml
 *.cover
 *.log
-.idea
-.vscode
+.git/modules/
+.pytest_cache/
+.pytest/
+.hypothesis/
+
+# Backend
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/models/__pycache__/
+backend/app/api/__pycache__/
+backend/app/database/__pycache__/
+backend/.env
+backend/venv/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/public/_next/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/.next/cache/
+frontend/.nyc_output
+frontend/coverage/
+
+# IDE
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
+
+# OS
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Environment
+.env
+.env.local
+.env.dev
+.env.test
+.env.production
+
+# Dependencies
+node_modules/
+node/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+target/
+*.min.js
+*.min.css
+
+# Database
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+coverage/lcov-report/
+.nyc_output/
+.pytest_cache/
+.coverage*
+
+# IDE specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+nbbuild/
+nbdist/
+.nb-gradle/
+
+# Python virtual environments
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# Environment specific
+.env.local
+.env.*.local
